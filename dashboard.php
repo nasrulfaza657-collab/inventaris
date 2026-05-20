@@ -13,11 +13,18 @@ if(!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin'){
 }
 
 // Ambil Nama Lengkap Admin dari Database berdasarkan ID yang sedang login
-$id_admin_login = $_SESSION['id_user'];
-$ambil_admin = mysqli_query($conn, "SELECT nama FROM user WHERE id_user = '$id_admin_login'");
-$data_admin = mysqli_fetch_assoc($ambil_admin);
-$nama_admin_tampil = $data_admin['nama'];
+$nama_admin_tampil = $_SESSION['username']; // Cadangan awal pake username session
 
+if (isset($_SESSION['id_user'])) {
+    $id_admin_login = $_SESSION['id_user'];
+    $ambil_admin = mysqli_query($conn, "SELECT nama FROM user WHERE id_user = '$id_admin_login'");
+    
+    // Cek apakah datanya ketemu di database
+    if ($ambil_admin && mysqli_num_rows($ambil_admin) > 0) {
+        $data_admin = mysqli_fetch_assoc($ambil_admin);
+        $nama_admin_tampil = $data_admin['nama']; // Kalau ketemu, pakai nama lengkap asli
+    }
+}
 /*
 |--------------------------------------------------------------------------
 | SIMPAN DATA BARANG
